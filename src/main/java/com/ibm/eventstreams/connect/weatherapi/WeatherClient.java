@@ -1,6 +1,6 @@
 /*
  * Copyright 2019 IBM Corporation
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -40,66 +40,43 @@ public class WeatherClient {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final String url;
     private final String units;
+    private final String apikey;
 
-    public WeatherClient(String url, String username, String password, String units) {
+    public WeatherClient(String url, String apikey, String units) {
         this.url = url;
-        this.client = new OkHttpClient.Builder()
-                .authenticator(new Authenticator() {
-                    @Override
-                    public Request authenticate(Route route, Response response) throws IOException {
-                        if (response.request().header("Authorization") != null) {
-                            return null;
-                        }
-                        return response.request().newBuilder()
-                                .header("Authorization", Credentials.basic(username, password))
-                                .build();
-                    }
-                })
-                .build();
+        this.apikey = apikey;
+        this.client = new OkHttpClient.Builder().build();
         this.units = units;
-    }
-
-    public LocationCoordinates getLocationCoordinates(String name, String locationName) throws Exception {
-        HttpUrl url = getLocationServiceURL(locationName);
-        try (Response response = query(url)) {
-            if (response.isSuccessful()) {
-                String body = response.body().string();
-                LOG.debug("getLocationCoordinates response body: {}", body);
-                LocationData data = objectMapper.readValue(body, LocationData.class);
-                return data.getLocationCoordinates(name);
-            } else {
-                throw new Exception("Failed querying Location for " + locationName + ". Response: " + response);
-            }
-        }
     }
 
     public WeatherData getWeatherData(LocationCoordinates locationCoordinates) throws Exception {
         HttpUrl url = getCurrentWeatherURL(locationCoordinates);
+        System.out.println(url.toString());
         try (Response response = query(url)) {
             if (response.isSuccessful()) {
                 String body = response.body().string();
                 LOG.debug("getWeatherData response body: {}", body);
-                return objectMapper.readValue(body, WeatherData.class);
+                WeatherData.Observation observation = objectMapper.readValue(body, WeatherData.Observation.class);
+                return new WeatherData(observation);
             } else {
                 throw new Exception("Failed querying Weather for " + locationCoordinates + ". Response: " + response);
             }
         }
     }
 
-    private HttpUrl getCurrentWeatherURL(LocationCoordinates locationCoordinates) throws URISyntaxException {
-        return HttpUrl.parse(url).newBuilder().addPathSegments("api/weather/v1/geocode")
-                .addPathSegment(String.valueOf(locationCoordinates.latitude()))
-                .addPathSegment(String.valueOf(locationCoordinates.longitude()))
-                .addPathSegment("observations.json")
-                .addQueryParameter("language", "en-US")
-                .addQueryParameter("units", units).build();
+    private String getLatLonString(LocationCoordinates locationCoordinates) {
+        return String.valueOf(locationCoordinates.latitude()) +
+               "," +
+               String.valueOf(locationCoordinates.longitude());
     }
 
-    private HttpUrl getLocationServiceURL(String city) throws URISyntaxException {
-        return HttpUrl.parse(url).newBuilder().addPathSegments("api/weather/v3/location/search")
-                .addQueryParameter("query", city)
-                .addQueryParameter("locationType", "city")
-                .addQueryParameter("language", "en-US").build();
+    private HttpUrl getCurrentWeatherURL(LocationCoordinates locationCoordinates) throws URISyntaxException {
+        return HttpUrl.parse(url).newBuilder().addPathSegments("observations/current")
+                .addQueryParameter("geocode", getLatLonString(locationCoordinates))
+                .addQueryParameter("language", "en-US")
+                .addQueryParameter("apiKey", apikey)
+                .addQueryParameter("format", "json")
+                .addQueryParameter("units", units).build();
     }
 
     private Response query(HttpUrl url) throws IOException {

@@ -1,6 +1,6 @@
 /*
  * Copyright 2019 IBM Corporation
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -54,10 +54,9 @@ public class WeatherSourceTask extends SourceTask {
     public void start(Map<String, String> props) {
         WeatherSourceConnectorConfig connectorConfig = new WeatherSourceConnectorConfig(props);
         String url = connectorConfig.getString(WeatherSourceConnectorConfig.URL);
-        String username = connectorConfig.getString(WeatherSourceConnectorConfig.USERNAME);
         String password = connectorConfig.getString(WeatherSourceConnectorConfig.PASSWORD);
         String units = connectorConfig.getString(WeatherSourceConnectorConfig.UNITS);
-        client = new WeatherClient(url, username, password, units);
+        client = new WeatherClient(url, password, units);
         locations = parseLocations(connectorConfig.getList(WeatherSourceConnectorConfig.LOCATIONS));
         topic = connectorConfig.getString(WeatherSourceConnectorConfig.TOPIC);
         pollIntervalMs = Duration.ofMinutes(connectorConfig.getLong(WeatherSourceConnectorConfig.POLL_INTERVAL)).toMillis();
@@ -84,7 +83,7 @@ public class WeatherSourceTask extends SourceTask {
                     LOG.info("Added a message: {}", weatherData);
                 } catch (Exception exc) {
                     LOG.error("Failed getting weather for {}: {}", location, exc.getMessage(), exc);
-                } 
+                }
             }
         } finally {
             lastPollTime = System.currentTimeMillis();
@@ -121,7 +120,7 @@ public class WeatherSourceTask extends SourceTask {
             Double lon = Double.valueOf(locationParts[1]);
             return new LocationCoordinates(name, lat, lon);
         } else {
-            return client.getLocationCoordinates(name, location);
+            throw new IllegalArgumentException("No geocode API available");
         }
     }
 

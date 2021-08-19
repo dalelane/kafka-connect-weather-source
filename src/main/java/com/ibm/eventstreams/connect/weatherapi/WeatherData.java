@@ -1,6 +1,6 @@
 /*
  * Copyright 2019 IBM Corporation
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -28,8 +28,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class WeatherData {
 
     public static final Schema SCHEMA = SchemaBuilder.struct().name("weatherdata")
-            .field("name", Schema.STRING_SCHEMA)
+            // .field("name", Schema.STRING_SCHEMA)
             .field("wx_icon", Schema.OPTIONAL_INT32_SCHEMA)
+            .field("wind_speed", Schema.OPTIONAL_INT32_SCHEMA)
             .field("temperature", Schema.OPTIONAL_INT32_SCHEMA)
             .field("humidity", Schema.OPTIONAL_INT32_SCHEMA)
             .build();
@@ -37,31 +38,43 @@ public class WeatherData {
     @JsonProperty("observation")
     public Observation obs;
 
+    public WeatherData (Observation obs) {
+        this.obs = obs;
+    }
+    public WeatherData() {}
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public class Observation {
+    public static class Observation {
         public Observation() {}
-        @JsonProperty("temp")
+        @JsonProperty("temperature")
         public Integer temperature;
-        @JsonProperty("rh")
+        @JsonProperty("relativeHumidity")
         public Integer humidity;
-        @JsonProperty("wx_icon")
+        @JsonProperty("iconCode")
         public Integer wx_icon;
+        @JsonProperty("windSpeed")
+        public Integer wind_speed;
     }
 
     public String toString() {
-        return "{\"wx_icon\": " + obs.wx_icon + ", \"temperature\": " + obs.temperature + ", \"humidity\": " + obs.humidity + "}";
+        return "{\"wx_icon\": " + obs.wx_icon +
+            ", \"temperature\": " + obs.temperature +
+            ", \"wind_speed\": " + obs.wind_speed +
+            ", \"humidity\": " + obs.humidity + "}";
     }
 
     public Struct toStruct(String name) {
         Struct struct =  new Struct(SCHEMA);
-        struct.put(SCHEMA.field("name"), name);
+        // struct.put(SCHEMA.field("name"), name);
         if (obs.wx_icon != null)
             struct.put(SCHEMA.field("wx_icon"), obs.wx_icon);
         if (obs.temperature != null)
             struct.put(SCHEMA.field("temperature"), obs.temperature);
         if (obs.humidity != null)
             struct.put(SCHEMA.field("humidity"), obs.humidity);
+        if (obs.wind_speed != null)
+            struct.put(SCHEMA.field("wind_speed"), obs.wind_speed);
         return struct;
     }
 }

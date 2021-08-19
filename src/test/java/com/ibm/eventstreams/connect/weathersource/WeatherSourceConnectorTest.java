@@ -1,6 +1,6 @@
 /*
  * Copyright 2019 IBM Corporation
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -32,7 +32,6 @@ public class WeatherSourceConnectorTest {
         WeatherSourceConnector connector = new WeatherSourceConnector();
         Map<String, String> props = new HashMap<>();
         props.put(WeatherSourceConnectorConfig.URL, "");
-        props.put(WeatherSourceConnectorConfig.USERNAME, "");
         props.put(WeatherSourceConnectorConfig.PASSWORD, "");
         props.put(WeatherSourceConnectorConfig.LOCATIONS, "Atlanta/Atlanta");
         connector.start(props);
@@ -46,7 +45,6 @@ public class WeatherSourceConnectorTest {
         WeatherSourceConnector connector = new WeatherSourceConnector();
         Map<String, String> props = new HashMap<>();
         props.put(WeatherSourceConnectorConfig.URL, "");
-        props.put(WeatherSourceConnectorConfig.USERNAME, "");
         props.put(WeatherSourceConnectorConfig.PASSWORD, "");
         props.put(WeatherSourceConnectorConfig.LOCATIONS, "Atlanta/Atlanta,Paris/Paris");
         connector.start(props);
@@ -60,7 +58,6 @@ public class WeatherSourceConnectorTest {
         WeatherSourceConnector connector = new WeatherSourceConnector();
         Map<String, String> props = new HashMap<>();
         props.put(WeatherSourceConnectorConfig.URL, "");
-        props.put(WeatherSourceConnectorConfig.USERNAME, "");
         props.put(WeatherSourceConnectorConfig.PASSWORD, "");
         props.put(WeatherSourceConnectorConfig.LOCATIONS, "Atlanta/Atlanta,Paris/Paris");
         connector.start(props);
@@ -76,7 +73,6 @@ public class WeatherSourceConnectorTest {
         WeatherSourceConnector connector = new WeatherSourceConnector();
         Map<String, String> props = new HashMap<>();
         props.put(WeatherSourceConnectorConfig.URL, "");
-        props.put(WeatherSourceConnectorConfig.USERNAME, "");
         props.put(WeatherSourceConnectorConfig.PASSWORD, "");
         props.put(WeatherSourceConnectorConfig.LOCATIONS, "Atlanta/Atlanta,Paris/Paris");
         connector.start(props);

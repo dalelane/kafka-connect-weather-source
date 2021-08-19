@@ -1,6 +1,6 @@
 /*
  * Copyright 2019 IBM Corporation
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -56,25 +56,6 @@ public class WeatherSourceTaskTest {
         } catch (Exception e) {
             // expected
         }
-    }
-
-    @Test
-    public void testToCoordinatesWithLocation() throws Exception {
-        LocationCoordinates atlantaCoordinates = new LocationCoordinates("Atlanta", 33.749, -84.39);
-        String location = new String(Files.readAllBytes(Paths.get("./src/test/resources/location.json")));
-        server.enqueue(new MockResponse().setBody(location));
-
-        WeatherSourceTask task = new WeatherSourceTask();
-        Map<String, String> props = new HashMap<>();
-        props.put(WeatherSourceConnectorConfig.URL, url.toString());
-        props.put(WeatherSourceConnectorConfig.USERNAME, "");
-        props.put(WeatherSourceConnectorConfig.PASSWORD, "");
-        props.put(WeatherSourceConnectorConfig.LOCATIONS, "Atlanta/Atlanta");
-        task.start(props);
-
-        // From location name
-        server.enqueue(new MockResponse().setBody(location));
-        assertEquals(atlantaCoordinates, task.toCoordinates("Atlanta", "Atlanta"));
     }
 
     @Test

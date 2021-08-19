@@ -1,6 +1,6 @@
 /*
  * Copyright 2019 IBM Corporation
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -27,7 +27,7 @@ public class WeatherDataTest {
     @Test
     public void testToString() {
         WeatherData data = new WeatherData();
-        data.obs = data.new Observation();
+        data.obs = new WeatherData.Observation();
         data.obs.humidity = new Integer(123);
         data.obs.temperature = new Integer(456);
         data.obs.wx_icon = new Integer(789);
@@ -41,7 +41,7 @@ public class WeatherDataTest {
     @Test
     public void testToStruct() {
         WeatherData data = new WeatherData();
-        data.obs = data.new Observation();
+        data.obs = new WeatherData.Observation();
         data.obs.humidity = new Integer(123);
         data.obs.temperature = new Integer(456);
         data.obs.wx_icon = new Integer(789);
